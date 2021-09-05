@@ -1,3 +1,5 @@
-# Web-Development-and-Designing-Internship-Task-6
-Testing-(Automated)
-Check out the code #GRIPSEP21 #TSF
+The Sparks Foudation
+Graduate Rotational Internship Program
+Batch July'21
+Automated-Testing-using-Selenium
+Task #6 Testing (Automated):
