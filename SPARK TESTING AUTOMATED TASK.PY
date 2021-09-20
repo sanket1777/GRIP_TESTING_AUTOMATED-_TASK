@@ -1,207 +1,158 @@
-# Imports
 from selenium import webdriver
+import time
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.support.ui import Select
+from selenium.webdriver import ActionChains
 
-import time
-# Init driver
-driver = webdriver.Chrome()
+options_obj = Options()
+options_obj.add_argument("start-maximized")
+options_obj.add_argument("--disable-extensions")
 
-# Variable
-testUrl = "https://www.thesparksfoundationsingapore.org/"
+wd_chrome = webdriver.Chrome(options=options_obj, executable_path="R:\chromedriver.exe")
+wd_chrome.get("https://www.thesparksfoundationsingapore.org/")
+print("\nTest Cases")
 
-# Styles
-class Style():
-    red = '\033[31m'
-    green = '\033[32m'
-    yellow = '\033[33m'
-    reset = '\033[0m'
+# TestCase1: Checking for the logo of the webpage
+print("\nTestCase 1:")
+logo = wd_chrome.find_element_by_xpath('//*[@id="home"]/div/div[1]/h1/a/img')
+if logo.is_displayed():
+    print("Successful : Logo is Present!!\n")
+    time.sleep(2)
+else:
+    print("Logo is not visible!!\n")
 
-# Output
-Success = Style.green +"Success" + Style.reset
-Failed = Style.red +"Failed" + Style.reset
+# TestCase2: Checking for the parameter 'nav'
+print("TestCase 2:")
+try:
+    wd_chrome.find_element_by_tag_name('nav')
+    print("Verification of navigation bar has been done successfully!!\n")
+except NoSuchElementException:
+    print("Failed in Verifying of navigation bar!!\n")
 
-# Tests
-def Tests(url):
-    driver.get(url)
-    print("Site: " + Style.yellow + driver.title + Style.reset )
-    print("URL: " + Style.yellow + driver.current_url + Style.reset )  
-    
-    # Test 1 => Title
-    def testTitle():
-        if driver.title:
-            print("Title: " + Success )
-        else:
-            print("Title: " + Failed )
-    testTitle()
+# TestCase3: checking for 'About Us'
+print("TestCase 3:")
+try:
+    wd_chrome.find_element_by_xpath('//*[@id="link-effect-3"]/ul/li[1]/a').click()
+    time.sleep(2)
+    wd_chrome.find_element_by_xpath('//*[@id="link-effect-3"]/ul/li[1]/ul/li[1]/a').click()
+    time.sleep(3)
+    print('About Us Page is visited Successfully!!\n')
+except NoSuchElementException:
+    print("Failed to visit About Us Page!!\n")
+    time.sleep(3)
 
-    # Test 2 => Site Logo
-    def testLogo():
-        try:
-            driver.find_element_by_xpath('/html/body/div[1]/div/div[1]/h1/a/img').click()
-            print("Logo: " + Success )
-            time.sleep(3)
-        except NoSuchElementException:
-            print("Logo: " + Failed )    
-    testLogo()
+# TestCase4: Checking for the parameter 'Home'
+print("TestCase 4:")
+try:
+    wd_chrome.find_element_by_partial_link_text("The Sparks Foundation").click()
+    print("Home link is working Successfully!!!\n")
+except NoSuchElementException:
+    print("Home Link is not Working!\n")
 
-    # Test 3 => Navbar
-    def testNavbar():
-        try:
-            driver.find_element_by_tag_name("nav")
-            print("Navbar: " + Success )
-        except NoSuchElementException:
-            print("Navbar: "  + Failed )
-    testNavbar()
+# TestCase5: Verifying the parameter 'Title'
+print("TestCase 5:")
+if wd_chrome.title:
+    print("Title has been verified Successfully: ", wd_chrome.title)
+else:
+    print("Title Verification Failed!!")
 
-    # Test 4 => Home button
-    def testHomeButton():
-        try:
-            driver.find_element_by_class_name("navbar-brand").click()
-            print("Home Link: " + Success )
-        except NoSuchElementException:
-            print("Home Link: " + + Failed )
-    testHomeButton()
+# TestCase 6: Checking Policy page
+print('\nTestCase 6:')
+try:
+    wd_chrome.find_element_by_link_text('Policies and Code').click()
+    time.sleep(3)
+    wd_chrome.find_element_by_link_text("Policies").click()
+    time.sleep(2)
+    wd_chrome.find_element_by_link_text('Code of Ethics and Conduct').click()
+    time.sleep(2)
+    print('Policy Page Verified!\n')
+except NoSuchElementException:
+    print('No New Tab opened. Failed!\n')
 
-    # Test 5 => About Us Page
-    def testAbout():
-        try:
-            driver.find_element_by_link_text('About Us').click()
-            time.sleep(1.5)
-            driver.find_element_by_link_text('News').click()
-            time.sleep(3)
-            print("About Page: " + Success )
-        except NoSuchElementException:
-            print("About Page: " + Failed )
-    testAbout()
+# TestCase7: Programs page
+print('TestCase 7:')
+try:
+    wd_chrome.find_element_by_link_text('Programs').click()
+    time.sleep(3)
+    wd_chrome.find_element_by_link_text('Student Scholarship Program').click()
+    time.sleep(3)
+    wd_chrome.find_element_by_link_text("Student Mentorship Program").click()
+    time.sleep(3)
+    wd_chrome.find_element_by_link_text('Student SOS Program').click()
+    time.sleep(3)
+    wd_chrome.find_element_by_link_text('Workshops').click()
+    time.sleep(3)
+    wd_chrome.find_element_by_link_text('Corporate Programs').click()
+    time.sleep(3)
+    print('Programs Page is Verified!!\n')
+except NoSuchElementException:
+    print('Failed to verify Programs page!\n')
 
-    # Test 6 => Policies Page
-    def testPolicy():
-        try:
-            driver.find_element_by_link_text('Policies and Code').click()
-            time.sleep(1.5)
-            driver.find_element_by_link_text("Service Quality Values").click()
-            time.sleep(3)
-            print("Policy Page: " + Success )
-        except NoSuchElementException:
-            print("Policy Page: " + Failed )
-    testPolicy()
+# TestCase8 : verifying Links Page
+print("TestCase 8:")
+try:
+    wd_chrome.find_element_by_link_text('LINKS').click()
+    time.sleep(2)
+    wd_chrome.find_element_by_link_text('Software & App').click()
+    time.sleep(2)
+    wd_chrome.find_element_by_link_text('AI in Education').click()
+    time.sleep(2)
+    print('Successfully verified links page!!\n')
+except NoSuchElementException:
+    print("Links page Verification Failed!\n")
 
-    # Test 7 => Programs page
-    def testPrograms():
-        try:
-            driver.find_element_by_link_text('Programs').click()
-            time.sleep(1.5)
-            driver.find_element_by_link_text("Corporate Programs").click()
-            time.sleep(3)
-            print("Programs Page: " + Success )
-        except NoSuchElementException:
-            print("Programs Page" + Failed )
-    testPrograms()
+# Testcase9 : Checking for the parameter 'Join Us'
+print('TestCase 9:')
+try:
+    join_us = wd_chrome.find_element_by_xpath('//*[@id="link-effect-3"]/ul/li[5]/a')
+    join_us.click()
+    time.sleep(2)
+    why_join_us = wd_chrome.get('https://www.thesparksfoundationsingapore.org/join-us/why-join-us/')
+    time.sleep(2)
+    name = wd_chrome.find_element_by_xpath('/html/body/div[2]/div/div[2]/div[2]/div/form/input[1]')
+    email = wd_chrome.find_element_by_xpath('/html/body/div[2]/div/div[2]/div[2]/div/form/input[2]')
+    role = wd_chrome.find_element_by_xpath('/html/body/div[2]/div/div[2]/div[2]/div/form/select')
 
-    # Test 8 => Links Page
-    def testLinks():
-        try:
-            driver.find_element_by_link_text('LINKS').click()
-            time.sleep(1.5)
-            driver.find_element_by_link_text('AI in Education').click()
-            time.sleep(3)
-            print("Links Page: " + Success )
-        except NoSuchElementException:
-            print("Links Page: " + Failed )
-    testLinks()
+    # Scrolling Action
+    wd_chrome.execute_script("window.scrollBy(0,500)", name)
+    time.sleep(2)
 
-    # Test 9 => Contact us Page
-    def testContact():
-        try:
-            driver.find_element_by_link_text("Contact Us").click()
-            time.sleep(3)
-            linkCheckContact = driver.find_element_by_xpath('/html/body/div[2]/div/div/div[3]/div[2]/p[2]')
-            time.sleep(1)
-            if linkCheckContact.text == "+65-8402-8590, info@thesparksfoundation.sg":
-                print("Contact Info: " + Success )
-            else:
-                print("Contact Info: " + Failed )
-            print("Contact Page: " + Success )
-        except NoSuchElementException:
-            print("Contact Page: " + Failed )
-    testContact()
+    name.send_keys('sanket kamble')
+    time.sleep(2)
 
+    email.send_keys('sanketkamble1777@gmail.com')
+    time.sleep(2)
 
-    # Test 10 => Check the Form
-    def testForm():
-        try:
-            driver.find_element_by_link_text("Join Us").click()
-            time.sleep(1.5)
-            driver.find_element_by_link_text("Brand Ambassador").click()
-            time.sleep(3)
-            driver.find_element_by_name('Name').send_keys('sanket')
-            time.sleep(1)
-            driver.find_element_by_name('Email').send_keys('sanketkamble1777@GMAIL.COM.com')
-            time.sleep(1)
-            select = Select(driver.find_element_by_class_name('form-control'))
-            time.sleep(1)
-            select.select_by_visible_text('Intern')
-            time.sleep(1)
-            driver.find_element_by_xpath("/html/body/div[2]/div/div[2]/div[2]/div/form/input[3]").click()
-            time.sleep(3)
-            print("Form: " + Success )
-        except NoSuchElementException:
-            print("Form: " + Failed )
-            time.sleep(4)
-    testForm()             
+    choose = Select(role)
+    choose.select_by_visible_text('Student')
+    print('Join US page is visited and Form filled successfully\n')
+except:
+    print('Join US page is not visited\n')
 
-    # Test 11 => Know More Button
-    def testKnowMore():
-        try:
-            driver.find_element_by_class_name("navbar-brand").click()
-            time.sleep(2)
-            driver.find_element_by_xpath("/html/body/div[2]/div/div[2]/a")
-            print("Know More Button: " + Success )
-        except NoSuchElementException:
-            print("Know More Button: " + Failed )
-    testKnowMore()
+time.sleep(3)
 
-    # Test 12 => Hover to Top button
-    def hoverTop():
-        try:
-            driver.find_element_by_id("toTopHover").click()
-            time.sleep(1)
-            print("Hover Button: " + Success )
-        except NoSuchElementException:
-            print("Hover: " + Failed )
-        hoverTop()
+# TestCase10 : Checking for the Contact Us Page
+print("TestCase 10:")
+try:
+    wd_chrome.find_element_by_link_text("Contact Us").click()
+    time.sleep(2)
+    info = wd_chrome.find_element_by_xpath('/html/body/div[2]/div/div/div[3]/div[2]/p[2]')
+    time.sleep(2)
 
-        # Test 13 => Copyright text
-        def testCopyright():
-            driver.find_element_by_class_name("navbar-brand").click()
-            time.sleep(3)
-            copyrightText = driver.find_element_by_xpath('/html/body/div[7]/p')
-            time.sleep(1)
-            if copyrightText.text == "© 2017 The Sparks Foundation. All Rights Reserved | Design by W3layouts":
-                print("Copyright Text: " + Success)
-            else:
-                print("Copyright Text: " + Failed)
-
-        testCopyright()
-
-        # Test 13 => Copyright text
-        def testCopyright():
-            driver.find_element_by_class_name("navbar-brand").click()
-            time.sleep(3)
-            copyrightText = driver.find_element_by_xpath('/html/body/div[7]/p')
-            time.sleep(1)
-            if copyrightText.text == "© 2017 The Sparks Foundation. All Rights Reserved | Design by W3layouts":
-                print("Copyright Text: " + Success)
-            else:
-                print("Copyright Text: " + Failed)
-
-        testCopyright()
-
-    # Exit the test
-    def exit():
-        driver.close()
-    exit()
-
-
-# Run Final Test
+    # print(info.text)
+    if info.text == "+65-8402-8590, info@thesparksfoundation.sg":
+        print('Contact Information is Correct!')
+    else:
+        print('Incorrect! Information')
+    print("Contact Page Verification ha done Successfully!\n")
+    wd_chrome.execute_script("window.scrollBy(0,350)", "")
+    time.sleep(2)
+    wd_chrome.execute_script("window.scrollBy(0,350)", "")
+    time.sleep(2)
+    wd_chrome.execute_script("window.scrollBy(0,350)", "")
+    time.sleep(2)
+    wd_chrome.execute_script("window.scrollBy(0,100)", "")
+except NoSuchElementException:
+    print("Contact Page Verification Unsuccessful!")
